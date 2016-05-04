@@ -7,15 +7,15 @@ import (
 	"github.com/robertkowalski/graylog-golang"
 )
 
-type GelfClient struct {
+type Gelf struct {
 	Client      *gelf.Gelf
 	ServiceName string
 }
 
-func CreateGelf(serviceName string, graylogHost string, graylogPort int) GelfClient {
-	client := GelfClient{
+func CreateGelf(serviceName string, graylogHost string, graylogPort int64) Courier {
+	client := Gelf{
 		Client: gelf.New(gelf.Config{
-			GraylogPort:     graylogPort,
+			GraylogPort:     int(graylogPort),
 			GraylogHostname: graylogHost,
 		}),
 		ServiceName: serviceName,
@@ -23,7 +23,7 @@ func CreateGelf(serviceName string, graylogHost string, graylogPort int) GelfCli
 	return client
 }
 
-func (g *GelfClient) Send(serviceName string, catalog string, level string, message string) {
+func (g Gelf) Send(serviceName string, catalog string, level string, message string) {
 	g.Client.Log(`{
     "host": "[` + serviceName + "][" + catalog + `]",
     "timestamp": ` + strconv.FormatInt(time.Now().Unix(), 10) + `,
