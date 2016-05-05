@@ -4,6 +4,8 @@
 * Chaika use consul to register and deregister log info
 * Checkout the log4js appender for NodeJS: https://github.com/duythinht/log4js-chaika-appender
 
+### Usage
+
     /chaika -help
     Usage of ./chaika:
       -consul-host string
