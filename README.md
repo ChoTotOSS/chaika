@@ -1,6 +1,8 @@
 # chaika - The log shipper
 
-Checkout the log4js appender for NodeJS: https://github.com/duythinht/log4js-chaika-appender
+* Currently, just support ship log over UDP to GELF (graylog), more log format and adapter will be support soon
+* Chaika use consul to register and deregister log info
+* Checkout the log4js appender for NodeJS: https://github.com/duythinht/log4js-chaika-appender
 
     /chaika -help
     Usage of ./chaika:
