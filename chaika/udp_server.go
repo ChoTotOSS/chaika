@@ -5,12 +5,14 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/duythinht/chaika/config"
 	"github.com/duythinht/chaika/courier"
 )
 
-func RunServer(port int64, consulHost string, consulPort int64) {
+func RunServer() {
+	cfg := config.GetConfig()
 
-	listenAddr := ":" + strconv.FormatInt(port, 10)
+	listenAddr := ":" + strconv.FormatInt(cfg.Port, 10)
 	ServerAddr, err := net.ResolveUDPAddr("udp", listenAddr)
 
 	CheckError(err)
@@ -23,8 +25,7 @@ func RunServer(port int64, consulHost string, consulPort int64) {
 
 	defer ServerConn.Close()
 
-	courier.Setup(consulHost, consulPort)
-
+	courier.Setup()
 	// Buffer for 4KB
 	buffer := make([]byte, 4096)
 

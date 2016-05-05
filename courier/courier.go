@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/duythinht/chaika/config"
 	"github.com/hashicorp/consul/api"
 )
 
@@ -23,14 +24,14 @@ var couriers map[string]Courier
 var expired map[string]int64
 var kv *api.KV
 
-func Setup(consulHost string, consulPort int64) {
-
+func Setup() {
+	cfg := config.GetConfig()
 	expired = make(map[string]int64)
 	couriers = make(map[string]Courier)
 	fmt.Println("Initilize couriers")
 
 	client, err := api.NewClient(&api.Config{
-		Address: consulHost + ":" + strconv.FormatInt(consulPort, 10),
+		Address: cfg.ConsulHost + ":" + strconv.FormatInt(cfg.ConsulPort, 10),
 	})
 	//api.DefaultConfig())
 	CheckError(err)
@@ -46,16 +47,16 @@ func Get(serviceName string) Courier {
 		return couriers[serviceName]
 	}
 
-	config := GetLogOutput(serviceName)
+	logCfg := GetLogOutput(serviceName)
 
-	couriers[serviceName] = CreateGelf(serviceName, config.Host, config.Port)
+	couriers[serviceName] = CreateGelf(serviceName, logCfg.Host, logCfg.Port)
 	expired[serviceName] = now + 5
 	return couriers[serviceName]
 }
 
 func GetLogOutput(serviceName string) LogInfo {
 
-	config := LogInfo{
+	logInfo := LogInfo{
 		Host: "10.50.10.3",
 		Port: 12201,
 		Type: "gelf",
@@ -66,24 +67,24 @@ func GetLogOutput(serviceName string) LogInfo {
 	CheckError(err)
 
 	if hostPair != nil {
-		config.Host = string(hostPair.Value)
+		logInfo.Host = string(hostPair.Value)
 	}
 
 	portPair, _, err := kv.Get(serviceName+"/log/port", nil)
 	CheckError(err)
 
 	if hostPair != nil {
-		config.Port, _ = strconv.ParseInt(string(portPair.Value), 10, 64)
+		logInfo.Port, _ = strconv.ParseInt(string(portPair.Value), 10, 64)
 	}
 
 	typePair, _, err := kv.Get(serviceName+"/log/type", nil)
 	CheckError(err)
 
 	if typePair != nil {
-		config.Type = string(typePair.Value)
+		logInfo.Type = string(typePair.Value)
 	}
 
-	return config
+	return logInfo
 }
 
 func CheckError(err error) {
