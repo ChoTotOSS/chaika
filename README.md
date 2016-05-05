@@ -1,4 +1,6 @@
-# chaika
+# chaika - The log shipper
+
+Checkout the log4js appender for NodeJS: https://github.com/duythinht/log4js-chaika-appender
 
     /chaika -help
     Usage of ./chaika:
