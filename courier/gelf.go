@@ -1,6 +1,7 @@
 package courier
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -13,6 +14,7 @@ type Gelf struct {
 }
 
 func CreateGelf(serviceName string, graylogHost string, graylogPort int64) Courier {
+	fmt.Println("Next logs of", serviceName, "will be ship to", graylogHost, graylogPort)
 	client := Gelf{
 		Client: gelf.New(gelf.Config{
 			GraylogPort:     int(graylogPort),
@@ -24,10 +26,10 @@ func CreateGelf(serviceName string, graylogHost string, graylogPort int64) Couri
 }
 
 func (g Gelf) Send(serviceName string, catalog string, level string, message string) {
-	g.Client.Log(`{
+	logData := `{
     "host": "[` + serviceName + "][" + catalog + `]",
     "timestamp": ` + strconv.FormatInt(time.Now().Unix(), 10) + `,
-    "level": "` + level + `",
     "message": "` + message + `"
-  }`)
+  }`
+	g.Client.Log(logData)
 }
