@@ -27,7 +27,7 @@ func RunServer() {
 
 	courier.Setup()
 	// Buffer for 4KB
-	buffer := make([]byte, 4096)
+	buffer := make([]byte, 32678)
 
 	for {
 		// n, add, err
