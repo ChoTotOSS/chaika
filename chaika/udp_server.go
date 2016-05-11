@@ -25,6 +25,8 @@ func RunServer() {
 
 	defer ServerConn.Close()
 
+	go RunMonitor()
+
 	courier.Setup()
 	// Buffer for 4KB
 	buffer := make([]byte, 32678)
@@ -47,6 +49,7 @@ func RunServer() {
 		g := courier.Get(log.Service)
 
 		fmt.Println(log.Service, ":", log.Message)
+		SendOverMonitor(log.Service + ":" + log.Message + "\n")
 		g.Send(log.Service, log.Catalog, log.Level, log.Message)
 	}
 }
