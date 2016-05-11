@@ -11,9 +11,8 @@ type Log struct {
 	Time    string
 }
 
-func ParseLog(logInput []byte) Log {
+func ParseLog(logInput []byte) (Log, error) {
 	var log Log
 	err := json.Unmarshal(logInput, &log)
-	CheckError(err)
-	return log
+	return log, err
 }

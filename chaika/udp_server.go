@@ -33,14 +33,20 @@ func RunServer() {
 		// n, add, err
 		length, _, err := ServerConn.ReadFromUDP(buffer)
 
-		log := ParseLog(buffer[:length])
+		if err != nil {
+			fmt.Println("Error: ", err)
+			continue
+		}
+
+		log, parseError := ParseLog(buffer[:length])
+
+		if parseError != nil {
+			continue
+		}
+
 		g := courier.Get(log.Service)
 
 		fmt.Println(log.Service, ":", log.Message)
 		g.Send(log.Service, log.Catalog, log.Level, log.Message)
-
-		if err != nil {
-			fmt.Println("Error: ", err)
-		}
 	}
 }
