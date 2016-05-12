@@ -73,7 +73,7 @@ func GetLogOutput(serviceName string) LogInfo {
 	portPair, _, err := kv.Get(serviceName+"/log/port", nil)
 	CheckError(err)
 
-	if hostPair != nil {
+	if portPair != nil {
 		logInfo.Port, _ = strconv.ParseInt(string(portPair.Value), 10, 64)
 	}
 
