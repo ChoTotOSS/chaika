@@ -21,7 +21,7 @@
 
 ### config consul KV with those key
 
-* [serviceName]/log/host - log host IP or domain
-* [serviceName]/log/port - log port IP
-* [serviceName]/log/type - log format type (current support only gelf)
+* /chaika/[serviceName]/log/host - log host IP or domain
+* /chaika/[serviceName]/log/port - log port IP
+* /chaika/[serviceName]/log/type - log format type (current support only gelf)
 
