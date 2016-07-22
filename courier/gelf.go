@@ -1,16 +1,24 @@
 package courier
 
 import (
+	"encoding/json"
 	"fmt"
-	"strconv"
-	"time"
-
 	"github.com/robertkowalski/graylog-golang"
+	"time"
 )
 
 type Gelf struct {
 	Client      *gelf.Gelf
 	ServiceName string
+}
+
+var levels = map[string]int32{
+	"DEBUG":   0,
+	"INFO":    1,
+	"WARN":    2,
+	"ERROR":   3,
+	"FATAL":   4,
+	"UNKNOWN": 5,
 }
 
 func CreateGelf(serviceName string, graylogHost string, graylogPort int64) Courier {
@@ -26,10 +34,22 @@ func CreateGelf(serviceName string, graylogHost string, graylogPort int64) Couri
 }
 
 func (g Gelf) Send(serviceName string, catalog string, level string, message string) {
-	logData := `{
-    "host": "[` + serviceName + "][" + catalog + `]",
-    "timestamp": ` + strconv.FormatInt(time.Now().Unix(), 10) + `,
-    "message": "` + message + `"
-  }`
-	g.Client.Log(logData)
+	logObj := map[string]interface{}{
+		"host":      "[" + serviceName + "][" + catalog + "]",
+		"timestamp": time.Now().Unix(),
+		"message":   message,
+	}
+
+	if lvlNumber, ok := levels[level]; ok {
+		logObj["level"] = lvlNumber
+	} else {
+		logObj["level"] = 5
+	}
+
+	logBuff, err := json.Marshal(logObj)
+	if err != nil {
+		fmt.Printf(err.Error())
+	} else {
+		g.Client.Log(string(logBuff))
+	}
 }
