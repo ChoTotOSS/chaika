@@ -12,11 +12,13 @@ import (
 
 type Courier interface {
 	Send(serviceName string, catalog string, level string, message string)
+	GetHost() string
+	GetPort() int
 }
 
 type LogInfo struct {
 	Host string
-	Port int64
+	Port int
 	Type string
 }
 
@@ -74,7 +76,7 @@ func GetLogOutput(serviceName string) LogInfo {
 	CheckError(err)
 
 	if portPair != nil {
-		logInfo.Port, _ = strconv.ParseInt(string(portPair.Value), 10, 64)
+		logInfo.Port, _ = strconv.Atoi(string(portPair.Value))
 	}
 
 	typePair, _, err := kv.Get(serviceName+"/log/type", nil)

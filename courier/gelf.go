@@ -1,18 +1,21 @@
 package courier
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/robertkowalski/graylog-golang"
 	"time"
+
+	"github.com/duythinht/gelf"
+	"github.com/duythinht/gelf/client"
 )
 
 type Gelf struct {
-	Client      *gelf.Gelf
+	Client      *client.Gelf
 	ServiceName string
+	Host        string
+	Port        int
 }
 
-var levels = map[string]int32{
+var levels = map[string]int{
 	"DEBUG":   0,
 	"INFO":    1,
 	"WARN":    2,
@@ -21,35 +24,41 @@ var levels = map[string]int32{
 	"UNKNOWN": 5,
 }
 
-func CreateGelf(serviceName string, graylogHost string, graylogPort int64) Courier {
+func CreateGelf(serviceName string, graylogHost string, graylogPort int) Courier {
 	fmt.Println("Next logs of", serviceName, "will be ship to", graylogHost, graylogPort)
 	client := Gelf{
-		Client: gelf.New(gelf.Config{
-			GraylogPort:     int(graylogPort),
-			GraylogHostname: graylogHost,
+		Client: client.New(client.Config{
+			GraylogHost: graylogHost,
+			GraylogPort: graylogPort,
 		}),
 		ServiceName: serviceName,
+		Host:        graylogHost,
+		Port:        graylogPort,
 	}
 	return client
 }
 
+func (g Gelf) GetHost() string {
+	return g.Host
+}
+
+func (g Gelf) GetPort() int {
+	return g.Port
+}
+
 func (g Gelf) Send(serviceName string, catalog string, level string, message string) {
-	logObj := map[string]interface{}{
-		"host":      "[" + serviceName + "][" + catalog + "]",
-		"timestamp": time.Now().Unix(),
-		"message":   message,
-	}
+
+	host := fmt.Sprintf("[%s][%s]", serviceName, catalog)
+
+	timestamp := time.Now().Unix()
+
+	gm := gelf.Create(message).SetHost(host).SetTimestamp(timestamp)
 
 	if lvlNumber, ok := levels[level]; ok {
-		logObj["level"] = lvlNumber
+		gm.SetLevel(lvlNumber)
 	} else {
-		logObj["level"] = 5
+		gm.SetLevel(5)
 	}
 
-	logBuff, err := json.Marshal(logObj)
-	if err != nil {
-		fmt.Printf(err.Error())
-	} else {
-		g.Client.Log(string(logBuff))
-	}
+	g.Client.Send(gm.ToJSON())
 }

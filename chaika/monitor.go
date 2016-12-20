@@ -37,5 +37,4 @@ func SendOverMonitor(message string) {
 		}
 		i++
 	}
-	fmt.Println(handlers)
 }
