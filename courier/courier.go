@@ -51,7 +51,14 @@ func Get(serviceName string) Courier {
 
 	logCfg := GetLogOutput(serviceName)
 
-	couriers[serviceName] = CreateGelf(serviceName, logCfg.Host, logCfg.Port)
+	if serv, ok := couriers[serviceName]; ok {
+		if serv.GetHost() != logCfg.Host && serv.GetPort() != logCfg.Port {
+			couriers[serviceName] = CreateGelf(serviceName, logCfg.Host, logCfg.Port)
+		}
+	} else {
+		couriers[serviceName] = CreateGelf(serviceName, logCfg.Host, logCfg.Port)
+	}
+
 	expired[serviceName] = now + 5
 	return couriers[serviceName]
 }
