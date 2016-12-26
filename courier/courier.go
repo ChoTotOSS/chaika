@@ -12,6 +12,7 @@ import (
 
 type Courier interface {
 	Send(serviceName string, catalog string, level string, message string)
+	Close()
 	GetHost() string
 	GetPort() int
 }
@@ -53,6 +54,7 @@ func Get(serviceName string) Courier {
 
 	if serv, ok := couriers[serviceName]; ok {
 		if serv.GetHost() != logCfg.Host && serv.GetPort() != logCfg.Port {
+			serv.Close()
 			couriers[serviceName] = CreateGelf(serviceName, logCfg.Host, logCfg.Port)
 		}
 	} else {

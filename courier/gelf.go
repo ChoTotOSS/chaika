@@ -46,6 +46,10 @@ func (g Gelf) GetPort() int {
 	return g.Port
 }
 
+func (g Gelf) Close() {
+	g.Client.Close()
+}
+
 func (g Gelf) Send(serviceName string, catalog string, level string, message string) {
 
 	host := fmt.Sprintf("[%s][%s]", serviceName, catalog)
