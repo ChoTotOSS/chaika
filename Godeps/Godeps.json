@@ -1,0 +1,37 @@
+{
+	"ImportPath": "github.com/duythinht/chaika",
+	"GoVersion": "go1.7",
+	"GodepVersion": "v74",
+	"Deps": [
+		{
+			"ImportPath": "github.com/duythinht/gelf",
+			"Rev": "5551c01bebbc6b2dba42c90e4a48a1e291dbc03e"
+		},
+		{
+			"ImportPath": "github.com/duythinht/gelf/chunk",
+			"Rev": "5551c01bebbc6b2dba42c90e4a48a1e291dbc03e"
+		},
+		{
+			"ImportPath": "github.com/duythinht/gelf/client",
+			"Rev": "5551c01bebbc6b2dba42c90e4a48a1e291dbc03e"
+		},
+		{
+			"ImportPath": "github.com/duythinht/gelf/pool",
+			"Rev": "5551c01bebbc6b2dba42c90e4a48a1e291dbc03e"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/consul/api",
+			"Comment": "v0.6.4-286-gae6cd89",
+			"Rev": "ae6cd89dd84f4f0f94c5219936b420a86d777ea6"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/go-cleanhttp",
+			"Rev": "ad28ea4487f05916463e2423a55166280e8254b5"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/serf/coordinate",
+			"Comment": "v0.8.0-34-gd3a67ab",
+			"Rev": "d3a67ab21bc8a4643fa53a3633f2d951dd50c6ca"
+		}
+	]
+}
