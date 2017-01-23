@@ -28,11 +28,10 @@ func RunServer() {
 	go RunMonitor()
 
 	courier.Setup()
-	// Buffer for 4KB
-	buffer := make([]byte, 32678)
 
 	for {
 		// n, add, err
+		buffer := make([]byte, 32678)
 		length, _, err := ServerConn.ReadFromUDP(buffer)
 
 		if err != nil {
@@ -43,6 +42,7 @@ func RunServer() {
 		log, parseError := ParseLog(buffer[:length])
 
 		if parseError != nil {
+			fmt.Println("Error: ", err)
 			continue
 		}
 

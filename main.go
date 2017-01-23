@@ -2,9 +2,14 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/duythinht/chaika/chaika"
 	"github.com/duythinht/chaika/config"
+)
+
+var (
+	requestVersionInfo *bool
 )
 
 func init() {
@@ -15,6 +20,7 @@ func init() {
 
 	grayHost := flag.String("graylog-host", "localhost", "Default graylog host or domain")
 	grayPort := flag.Int64("graylog-port", 12201, "Default graylog port")
+	requestVersionInfo = flag.Bool("version", false, "Version")
 	flag.Parse()
 	config.InitConfig(&config.Config{
 		Port:        *port,
@@ -26,5 +32,9 @@ func init() {
 }
 
 func main() {
+	if *requestVersionInfo {
+		fmt.Println("v" + VERSION)
+		return
+	}
 	chaika.RunServer()
 }
